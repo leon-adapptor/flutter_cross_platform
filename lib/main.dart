@@ -6,24 +6,49 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode themeMode = ThemeMode.system;
+
+  void setThemeMode(ThemeMode mode) {
+    setState(() {
+      themeMode = mode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Smart Dash',
+      themeMode: themeMode,
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-      home: const MyHomePage(title: 'Smart Dash'),
+      home: MyHomePage(
+        title: 'Smart Dash',
+        themeMode: themeMode,
+        setThemeMode: setThemeMode,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
   final String title;
+  final ThemeMode themeMode;
+  final Function(ThemeMode) setThemeMode;
 
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    required this.themeMode,
+    required this.setThemeMode,
+  });
 
   final List<Widget> _dashWidgets = const [
     DashSlider(label: 'kitchen'),
@@ -52,8 +77,10 @@ class MyHomePage extends StatelessWidget {
             ),
             SwitchListTile(
               title: const Text('Dark Mode'),
-              value: false,
-              onChanged: (value) {},
+              value: themeMode == ThemeMode.dark,
+              onChanged: (value) {
+                setThemeMode(value ? ThemeMode.dark : ThemeMode.system);
+              },
             ),
             ListTile(
               title: const Text('Theme Color'),
