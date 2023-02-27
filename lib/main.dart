@@ -1,6 +1,7 @@
+import 'package:cross_platform/color_selector.dart';
 import 'package:cross_platform/dashboard.dart';
+import 'package:cross_platform/theme/my_color_schemes.dart';
 import 'package:flutter/material.dart';
-import './theme/color_schemes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +16,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode themeMode = ThemeMode.system;
+  int selectedScheme = 0;
 
   void setThemeMode(ThemeMode mode) {
     setState(() {
       themeMode = mode;
+    });
+  }
+
+  void setColorScheme(String schemeName) {
+    setState(() {
+      selectedScheme = myColorSchemes
+          .indexWhere((element) => element.schemeName == schemeName);
     });
   }
 
@@ -27,12 +36,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Smart Dash',
       themeMode: themeMode,
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: myColorSchemes[selectedScheme].lightScheme),
+      darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: myColorSchemes[selectedScheme].darkScheme),
       home: MyHomePage(
         title: 'Smart Dash',
         themeMode: themeMode,
         setThemeMode: setThemeMode,
+        selectedColorScheme: myColorSchemes[selectedScheme],
+        setColorScheme: setColorScheme,
       ),
     );
   }
@@ -42,12 +57,16 @@ class MyHomePage extends StatelessWidget {
   final String title;
   final ThemeMode themeMode;
   final Function(ThemeMode) setThemeMode;
+  final MyColorScheme selectedColorScheme;
+  final Function(String selectedColor) setColorScheme;
 
   const MyHomePage({
     super.key,
     required this.title,
     required this.themeMode,
     required this.setThemeMode,
+    required this.setColorScheme,
+    required this.selectedColorScheme,
   });
 
   final List<Widget> _dashWidgets = const [
@@ -83,7 +102,11 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Theme Color'),
+              title: const Text('Theme'),
+              trailing: ColorSelector(
+                selectedColorScheme: selectedColorScheme,
+                setColorScheme: setColorScheme,
+              ),
               onTap: () {},
             ),
             ListTile(
