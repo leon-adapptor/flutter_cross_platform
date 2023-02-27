@@ -40,12 +40,79 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            SwitchListTile(
+              title: const Text('Dark Mode'),
+              value: false,
+              onChanged: (value) {},
+            ),
+            ListTile(
+              title: const Text('Theme Color'),
+              onTap: () {},
+            ),
+            ListTile(
+              title: const Text('Platform UI'),
+              trailing: const PlatformSelect(),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
       body: Dashboard(
         children: [
           DashSection(label: 'Home', dashControls: _dashWidgets),
           DashSection(label: 'Office', dashControls: _dashWidgets),
         ],
       ),
+    );
+  }
+}
+
+class PlatformSelect extends StatefulWidget {
+  const PlatformSelect({super.key});
+
+  @override
+  State<PlatformSelect> createState() => _PlatformSelectState();
+}
+
+class _PlatformSelectState extends State<PlatformSelect> {
+  final List<String> list = <String>[
+    'Auto',
+    'Material',
+    'Cupertino',
+    'Windows',
+    'MacOS',
+    'Linux',
+    'Web',
+  ];
+
+  late String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      elevation: 16,
+      onChanged: (String? value) {
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }
