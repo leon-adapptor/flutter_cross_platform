@@ -16,7 +16,11 @@ class PlatformSlider extends PlatformWidget {
 
   @override
   CupertinoSlider createIosWidget(BuildContext context) {
-    return CupertinoSlider(value: value, onChanged: onChanged);
+    return CupertinoSlider(
+      value: value,
+      onChanged: onChanged,
+      activeColor: Theme.of(context).primaryColor,
+    );
   }
 
   @override

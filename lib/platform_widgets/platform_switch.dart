@@ -16,7 +16,11 @@ class PlatformSwitch extends PlatformWidget {
 
   @override
   Widget createIosWidget(BuildContext context) {
-    return CupertinoSwitch(value: value, onChanged: onChanged);
+    return CupertinoSwitch(
+      value: value,
+      onChanged: onChanged,
+      activeColor: Theme.of(context).primaryColor,
+    );
   }
 
   @override
