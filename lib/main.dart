@@ -1,5 +1,6 @@
 import 'package:cross_platform/color_selector.dart';
 import 'package:cross_platform/dashboard.dart';
+import 'package:cross_platform/platform_select.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -100,46 +101,6 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class PlatformSelect extends StatefulWidget {
-  const PlatformSelect({super.key});
-
-  @override
-  State<PlatformSelect> createState() => _PlatformSelectState();
-}
-
-class _PlatformSelectState extends State<PlatformSelect> {
-  final List<String> list = <String>[
-    'Auto',
-    'Material',
-    'Cupertino',
-    'Windows',
-    'MacOS',
-    'Linux',
-    'Web',
-  ];
-
-  late String dropdownValue = list.first;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      elevation: 16,
-      onChanged: (String? value) {
-        setState(() {
-          dropdownValue = value!;
-        });
-      },
-      items: list.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
   }
 }
