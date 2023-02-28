@@ -1,3 +1,5 @@
+import 'package:cross_platform/platform_widgets/platform_slider.dart';
+import 'package:cross_platform/platform_widgets/platform_switch.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {
@@ -105,7 +107,7 @@ class _DashSwitchState extends State<DashSwitch> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Switch(
+          PlatformSwitch(
             value: isSelected,
             onChanged: (value) {
               setState(() {
@@ -141,7 +143,7 @@ class _DashSliderState extends State<DashSlider> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Slider(
+          PlatformSlider(
             value: sliderValue,
             onChanged: (value) {
               setState(() {
