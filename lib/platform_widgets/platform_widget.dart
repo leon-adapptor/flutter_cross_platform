@@ -6,14 +6,16 @@ import 'package:provider/provider.dart';
 
 import '../app_state_model.dart';
 
-abstract class PlatformWidget<
-    AndroidWidget extends Widget,
-    IosWidget extends Widget,
-    MacOSWidget extends Widget,
-    WindowsWidget extends Widget,
-    LinuxWidget extends Widget,
-    WebWidget extends Widget> extends StatelessWidget {
-  const PlatformWidget({super.key});
+/// A simple widget that builds specific widgets for different platforms.
+class PlatformWidget extends StatelessWidget {
+  const PlatformWidget({
+    super.key,
+    required this.androidBuilder,
+    required this.iosBuilder,
+  });
+
+  final WidgetBuilder androidBuilder;
+  final WidgetBuilder iosBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -34,30 +36,27 @@ abstract class PlatformWidget<
             model.targetUI == MyPlatformUI.web; // || (auto && Platform.web);
 
         if (isAndroid) {
-          return createAndroidWidget(context);
+          return androidBuilder(context);
         } else if (isIOS) {
-          return createIosWidget(context);
+          return iosBuilder(context);
         } else if (isMacOS) {
-          return createMacOsWidget(context);
+          // TODO implement macOSBuilder
+          return androidBuilder(context);
         } else if (isWindows) {
-          return createWindowsWidget(context);
+          // TODO implement windowsBuilder
+          return androidBuilder(context);
         } else if (isLinux) {
-          return createLinuxWidget(context);
+          // TODO implement linuxBuilder
+          return androidBuilder(context);
         } else if (isWeb) {
-          return createWebWidget(context);
+          // TODO implement webBuilder
+          return androidBuilder(context);
         }
 
         // platform not supported returns an empty widget
         debugPrint('PlatformWidget: Platform not supported');
-        return Container();
+        return ErrorWidget('Error Platform not supported');
       },
     );
   }
-
-  AndroidWidget createAndroidWidget(BuildContext context);
-  IosWidget createIosWidget(BuildContext context);
-  MacOSWidget createMacOsWidget(BuildContext context);
-  WindowsWidget createWindowsWidget(BuildContext context);
-  LinuxWidget createLinuxWidget(BuildContext context);
-  WebWidget createWebWidget(BuildContext context);
 }

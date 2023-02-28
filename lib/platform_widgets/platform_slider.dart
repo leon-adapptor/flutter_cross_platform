@@ -2,20 +2,25 @@ import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PlatformSlider extends PlatformWidget {
+class PlatformSlider extends StatelessWidget {
   final double value;
 
   final ValueChanged<double>? onChanged;
 
-  const PlatformSlider(
-      {super.key, required this.value, required this.onChanged});
-  @override
-  Slider createAndroidWidget(BuildContext context) {
-    return Slider(value: value, onChanged: onChanged);
+  const PlatformSlider({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  Slider androidBuilder(BuildContext context) {
+    return Slider(
+      value: value,
+      onChanged: onChanged,
+    );
   }
 
-  @override
-  CupertinoSlider createIosWidget(BuildContext context) {
+  CupertinoSlider iosBuilder(BuildContext context) {
     return CupertinoSlider(
       value: value,
       onChanged: onChanged,
@@ -24,26 +29,10 @@ class PlatformSlider extends PlatformWidget {
   }
 
   @override
-  Widget createLinuxWidget(BuildContext context) {
-    // TODO: implement createLinuxWidget
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget createMacOsWidget(BuildContext context) {
-    // TODO: implement createMacOsWidget
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget createWebWidget(BuildContext context) {
-    // TODO: implement createWebWidget
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget createWindowsWidget(BuildContext context) {
-    // TODO: implement createWindowsWidget
-    throw UnimplementedError();
+  Widget build(BuildContext context) {
+    return PlatformWidget(
+      androidBuilder: androidBuilder,
+      iosBuilder: iosBuilder,
+    );
   }
 }
