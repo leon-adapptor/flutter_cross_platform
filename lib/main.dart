@@ -1,6 +1,5 @@
 import 'package:cross_platform/color_selector.dart';
 import 'package:cross_platform/dashboard.dart';
-import 'package:cross_platform/theme/my_color_schemes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,22 +9,8 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  int selectedScheme = 0;
-
-  void setColorScheme(String schemeName) {
-    setState(() {
-      selectedScheme = myColorSchemes
-          .indexWhere((element) => element.schemeName == schemeName);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +22,15 @@ class _MyAppState extends State<MyApp> {
             title: 'Smart Dash',
             themeMode: model.themeMode,
             theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: myColorSchemes[selectedScheme].lightScheme),
+              useMaterial3: true,
+              colorScheme: model.colorScheme.lightScheme,
+            ),
             darkTheme: ThemeData(
-                useMaterial3: true,
-                colorScheme: myColorSchemes[selectedScheme].darkScheme),
-            home: MyHomePage(
+              useMaterial3: true,
+              colorScheme: model.colorScheme.darkScheme,
+            ),
+            home: const MyHomePage(
               title: 'Smart Dash',
-              selectedColorScheme: myColorSchemes[selectedScheme],
-              setColorScheme: setColorScheme,
             ),
           );
         },
@@ -56,14 +41,10 @@ class _MyAppState extends State<MyApp> {
 
 class MyHomePage extends StatelessWidget {
   final String title;
-  final MyColorScheme selectedColorScheme;
-  final Function(String selectedColor) setColorScheme;
 
   const MyHomePage({
     super.key,
     required this.title,
-    required this.setColorScheme,
-    required this.selectedColorScheme,
   });
 
   final List<Widget> _dashWidgets = const [
@@ -101,10 +82,7 @@ class MyHomePage extends StatelessWidget {
               ),
               ListTile(
                 title: const Text('Theme'),
-                trailing: ColorSelector(
-                  selectedColorScheme: selectedColorScheme,
-                  setColorScheme: setColorScheme,
-                ),
+                trailing: const ColorSelector(),
                 onTap: () {},
               ),
               ListTile(
