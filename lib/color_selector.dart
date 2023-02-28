@@ -27,22 +27,20 @@ class ColorSelector extends StatelessWidget {
               var color = isDarkMode
                   ? scheme.darkScheme.primary
                   : scheme.lightScheme.primary;
-              return ElevatedButton(
+              return OutlinedButton(
                 onPressed: () {
                   model.colorScheme = scheme;
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(color),
-                  shape: MaterialStateProperty.all<CircleBorder>(
-                    CircleBorder(
-                      side: BorderSide(
-                        color: selectedColor == color
-                            ? Theme.of(context).colorScheme.outlineVariant
-                            : color,
-                        width: 4,
-                      ),
-                    ),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(28, 28),
+                  padding: const EdgeInsets.only(right: 18, left: 18),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor: color,
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    width: selectedColor == color ? 3 : 0,
                   ),
+                  shape: const CircleBorder(),
                 ),
                 child: null,
               );
