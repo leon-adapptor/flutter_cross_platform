@@ -24,7 +24,6 @@ class PlatformSlider extends StatelessWidget {
     return CupertinoSlider(
       value: value,
       onChanged: onChanged,
-      activeColor: Theme.of(context).primaryColor,
     );
   }
 
