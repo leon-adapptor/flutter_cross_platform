@@ -42,15 +42,41 @@ class Dashboard extends StatelessWidget {
   }
 
   Widget _androidBuilder(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      drawer: Drawer(
-        child: SettingsList(title: title),
-      ),
-      body: ListView(
-        children: children,
-      ),
-    );
+    var breakpoint = 600.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth >= breakpoint) {
+      // large screen layout with expanded drawer
+      return Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              width: 240,
+              child: Drawer(
+                child: SettingsList(title: title),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: children,
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // small screen layout with collapsed drawer
+      return Scaffold(
+        appBar: AppBar(title: Text(title)),
+        drawer: Drawer(
+          child: SettingsList(title: title),
+        ),
+        body: ListView(
+          children: children,
+        ),
+      );
+    }
   }
 
   Widget _iosBuilder(BuildContext context) {
@@ -169,7 +195,11 @@ class DashSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(
+        left: 10.0,
+        right: 10,
+        bottom: 10,
+      ),
       child: Card(
         child: Column(
           children: [
