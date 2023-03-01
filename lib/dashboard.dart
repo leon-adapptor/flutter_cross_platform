@@ -1,16 +1,156 @@
+import 'package:cross_platform/app_state_model.dart';
+import 'package:cross_platform/platform_ui.dart';
+import 'package:cross_platform/platform_widgets/platform_list_tile.dart';
+import 'package:cross_platform/platform_widgets/platform_picker.dart';
 import 'package:cross_platform/platform_widgets/platform_slider.dart';
 import 'package:cross_platform/platform_widgets/platform_switch.dart';
+import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'color_selector.dart';
 
 class Dashboard extends StatelessWidget {
+  final String title;
   final List<Widget> children;
 
-  const Dashboard({super.key, required this.children});
+  const Dashboard({super.key, required this.title, required this.children});
+
+  /// This pushes the settings page as a full page modal dialog on top
+  /// of the tab bar and everything.
+  void _openIosSettings(context) {
+    Navigator.of(context, rootNavigator: true).push<void>(
+      CupertinoPageRoute(
+        title: 'Settings',
+        fullscreenDialog: true,
+        builder: (context) => CupertinoPageScaffold(
+          navigationBar: const CupertinoNavigationBar(),
+          child: SafeArea(
+            child: SettingsList(title: title),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// This is just an arbitrary delay that simulates some network activity.
+  Future<void> _refreshData() {
+    return Future.delayed(
+      const Duration(seconds: 2),
+    );
+  }
+
+  Widget _androidBuilder(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      drawer: Drawer(
+        child: SettingsList(title: title),
+      ),
+      body: ListView(
+        children: children,
+      ),
+    );
+  }
+
+  Widget _iosBuilder(BuildContext context) {
+    return CupertinoPageScaffold(
+      child: CustomScrollView(
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: Text(title),
+            trailing: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => _openIosSettings(context),
+              child: const Icon(CupertinoIcons.gear),
+            ),
+          ),
+          CupertinoSliverRefreshControl(
+            onRefresh: _refreshData,
+          ),
+          SliverSafeArea(
+            top: false,
+            sliver: SliverPadding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => children[index],
+                  childCount: 2,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: children,
+    return PlatformWidget(
+      androidBuilder: _androidBuilder,
+      iosBuilder: _iosBuilder,
+    );
+  }
+}
+
+/// renders list of settings
+class SettingsList extends StatelessWidget {
+  const SettingsList({
+    super.key,
+    required this.title,
+  });
+
+  final String title;
+
+  final List<String> list = const <String>[
+    MyPlatformUI.auto,
+    MyPlatformUI.material,
+    MyPlatformUI.cupertino,
+    // MyPlatformUI.windows,
+    // MyPlatformUI.macOS,
+    // MyPlatformUI.linux,
+    // MyPlatformUI.web,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AppStateModel>(
+      builder: (context, model, child) => ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          model.targetUI == MyPlatformUI.material
+              ? DrawerHeader(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                )
+              : Container(),
+          PlatformListTile(
+            title: const Text('Dark Mode'),
+            trailing: PlatformSwitch(
+              value: model.isDarkMode,
+              onChanged: (value) {
+                model.darkMode = value;
+              },
+            ),
+            onTap: () {
+              model.darkMode = !model.isDarkMode;
+            },
+          ),
+          PlatformListTile(
+            title: const Text('Theme'),
+            trailing: const ColorSelector(),
+            onTap: () {},
+          ),
+          PlatformListTile(
+            title: const Text('Platform UI'),
+            trailing: PlatformPicker(items: list),
+            onTap: () {},
+          ),
+        ],
+      ),
     );
   }
 }
