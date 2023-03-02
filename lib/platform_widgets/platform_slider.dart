@@ -1,11 +1,12 @@
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 
 class PlatformSlider extends StatelessWidget {
   final double value;
 
-  final ValueChanged<double>? onChanged;
+  final ValueChanged<double> onChanged;
 
   const PlatformSlider({
     super.key,
@@ -13,25 +14,34 @@ class PlatformSlider extends StatelessWidget {
     required this.onChanged,
   });
 
-  Slider androidBuilder(BuildContext context) {
+  Slider _androidBuilder(BuildContext context) {
     return Slider(
       value: value,
       onChanged: onChanged,
     );
   }
 
-  CupertinoSlider iosBuilder(BuildContext context) {
+  CupertinoSlider _iosBuilder(BuildContext context) {
     return CupertinoSlider(
       value: value,
       onChanged: onChanged,
     );
   }
 
+  MacosSlider _macOSBuilder(BuildContext context) {
+    return MacosSlider(
+      value: value,
+      onChanged: onChanged,
+      color: Theme.of(context).colorScheme.primary,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
-      androidBuilder: androidBuilder,
-      iosBuilder: iosBuilder,
+      androidBuilder: _androidBuilder,
+      iosBuilder: _iosBuilder,
+      macOSBuilder: _macOSBuilder,
     );
   }
 }

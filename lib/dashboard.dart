@@ -7,15 +7,23 @@ import 'package:cross_platform/platform_widgets/platform_switch.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'color_selector.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   final String title;
   final List<Widget> children;
 
   const Dashboard({super.key, required this.title, required this.children});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  int _pageIndex = 0;
 
   /// This pushes the settings page as a full page modal dialog on top
   /// of the tab bar and everything.
@@ -27,7 +35,7 @@ class Dashboard extends StatelessWidget {
         builder: (context) => CupertinoPageScaffold(
           navigationBar: const CupertinoNavigationBar(),
           child: SafeArea(
-            child: SettingsList(title: title),
+            child: SettingsList(title: widget.title),
           ),
         ),
       ),
@@ -47,19 +55,19 @@ class Dashboard extends StatelessWidget {
     if (screenWidth >= breakpoint) {
       // large screen layout with expanded drawer
       return Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(widget.title)),
         body: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(
               width: 240,
               child: Drawer(
-                child: SettingsList(title: title),
+                child: SettingsList(title: widget.title),
               ),
             ),
             Expanded(
               child: ListView(
-                children: children,
+                children: widget.children,
               ),
             ),
           ],
@@ -68,12 +76,12 @@ class Dashboard extends StatelessWidget {
     } else {
       // small screen layout with collapsed drawer
       return Scaffold(
-        appBar: AppBar(title: Text(title)),
+        appBar: AppBar(title: Text(widget.title)),
         drawer: Drawer(
-          child: SettingsList(title: title),
+          child: SettingsList(title: widget.title),
         ),
         body: ListView(
-          children: children,
+          children: widget.children,
         ),
       );
     }
@@ -84,7 +92,7 @@ class Dashboard extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverNavigationBar(
-            largeTitle: Text(title),
+            largeTitle: Text(widget.title),
             trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: () => _openIosSettings(context),
@@ -100,7 +108,7 @@ class Dashboard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 12),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => children[index],
+                  (context, index) => widget.children[index],
                   childCount: 2,
                 ),
               ),
@@ -111,11 +119,83 @@ class Dashboard extends StatelessWidget {
     );
   }
 
+  Widget _macOSBuilder(BuildContext context) {
+    return PlatformMenuBar(
+      menus: [
+        PlatformMenu(label: widget.title, menus: [
+          const PlatformProvidedMenuItem(
+            type: PlatformProvidedMenuItemType.about,
+          ),
+          PlatformMenuItem(
+            label: 'Preferences...',
+            onSelected: () => showMacosSheet(
+              context: context,
+              barrierDismissible: true,
+              builder: (_) =>
+                  MacosSheet(child: SettingsList(title: widget.title)),
+            ),
+          ),
+          const PlatformProvidedMenuItem(
+            type: PlatformProvidedMenuItemType.quit,
+          ),
+        ]),
+      ],
+      child: MacosWindow(
+        sidebar: Sidebar(
+          minWidth: 200,
+          // dragClosed: true,
+          builder: (context, scrollController) => SidebarItems(
+            currentIndex: _pageIndex,
+            onChanged: (index) {
+              setState(() => _pageIndex = index);
+            },
+            items: const [
+              SidebarItem(
+                leading: MacosIcon(CupertinoIcons.home),
+                label: Text('Dashboard'),
+              ),
+              // SidebarItem(
+              //   leading: MacosIcon(CupertinoIcons.info_circle),
+              //   label: Text('About'),
+              // ),
+            ],
+          ),
+          bottom: MacosListTile(
+            leading: const MacosIcon(CupertinoIcons.gear),
+            title: const Text('Settings'),
+            onClick: () {
+              showMacosSheet(
+                context: context,
+                barrierDismissible: true,
+                builder: (_) =>
+                    MacosSheet(child: SettingsList(title: widget.title)),
+              );
+            },
+          ),
+        ),
+        child: ContentArea(
+          builder: (BuildContext context, ScrollController scrollController) =>
+              IndexedStack(
+            index: _pageIndex,
+            children: [
+              Container(
+                key: UniqueKey(),
+                child: ListView(children: widget.children),
+              ),
+              // AboutPage(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
       androidBuilder: _androidBuilder,
       iosBuilder: _iosBuilder,
+      macOSBuilder: _macOSBuilder,
     );
   }
 }
@@ -132,9 +212,10 @@ class SettingsList extends StatelessWidget {
   final List<String> list = const <String>[
     MyPlatformUI.auto,
     MyPlatformUI.material,
+    // MyPlatformUI.material3,
     MyPlatformUI.cupertino,
+    MyPlatformUI.macOS,
     // MyPlatformUI.windows,
-    // MyPlatformUI.macOS,
     // MyPlatformUI.linux,
     // MyPlatformUI.web,
   ];

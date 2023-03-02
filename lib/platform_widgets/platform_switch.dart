@@ -1,6 +1,7 @@
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 
 class PlatformSwitch extends StatelessWidget {
   final bool value;
@@ -13,14 +14,14 @@ class PlatformSwitch extends StatelessWidget {
     required this.onChanged,
   });
 
-  Switch androidBuilder(BuildContext context) {
+  Switch _androidBuilder(BuildContext context) {
     return Switch(
       value: value,
       onChanged: onChanged,
     );
   }
 
-  CupertinoSwitch iosBuilder(BuildContext context) {
+  CupertinoSwitch _iosBuilder(BuildContext context) {
     return CupertinoSwitch(
       value: value,
       onChanged: onChanged,
@@ -28,11 +29,19 @@ class PlatformSwitch extends StatelessWidget {
     );
   }
 
+  MacosSwitch _macOSBuilder(BuildContext context) {
+    return MacosSwitch(
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
-      androidBuilder: androidBuilder,
-      iosBuilder: iosBuilder,
+      androidBuilder: _androidBuilder,
+      iosBuilder: _iosBuilder,
+      macOSBuilder: _macOSBuilder,
     );
   }
 }

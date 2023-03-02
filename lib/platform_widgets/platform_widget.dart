@@ -12,10 +12,12 @@ class PlatformWidget extends StatelessWidget {
     super.key,
     required this.androidBuilder,
     required this.iosBuilder,
+    this.macOSBuilder,
   });
 
   final WidgetBuilder androidBuilder;
   final WidgetBuilder iosBuilder;
+  final WidgetBuilder? macOSBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,9 @@ class PlatformWidget extends StatelessWidget {
         } else if (isIOS) {
           return iosBuilder(context);
         } else if (isMacOS) {
-          // TODO implement macOSBuilder
+          return macOSBuilder != null
+              ? macOSBuilder!(context)
+              : androidBuilder(context);
           return androidBuilder(context);
         } else if (isWindows) {
           // TODO implement windowsBuilder

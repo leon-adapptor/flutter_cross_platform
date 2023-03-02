@@ -2,6 +2,8 @@ import 'package:cross_platform/dashboard.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state_model.dart';
@@ -96,6 +98,51 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  Widget _macOSBuilder(BuildContext context) {
+    return Consumer<AppStateModel>(
+      builder: (context, model, child) {
+        var brightnessPlatform =
+            SchedulerBinding.instance.platformDispatcher.platformBrightness;
+
+        debugPrint('brightness: $brightnessPlatform');
+
+        var scheme = model.isDarkMode
+            ? model.colorScheme.darkScheme
+            : model.colorScheme.lightScheme;
+        var brightness =
+            model.isDarkMode ? Brightness.dark : brightnessPlatform;
+
+        return MacosApp(
+          title: title,
+          theme: MacosThemeData(
+            // brightness: brightness,
+            primaryColor: scheme.primary,
+          ),
+          darkTheme: MacosThemeData(
+            // brightness: brightness,
+            primaryColor: scheme.primary,
+          ),
+          themeMode: model.themeMode,
+          home: Dashboard(title: title, children: _dashSections),
+          debugShowCheckedModeBanner: true,
+          builder: (context, child) {
+            // we want to add in the material theme
+            // so we can use material widgets
+            // and use the material color scheme
+            return Theme(
+              data: ThemeData(
+                // brightness: brightness,
+                useMaterial3: true,
+                colorScheme: scheme,
+              ),
+              child: Material(child: child),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AppStateModel>(
@@ -103,6 +150,7 @@ class MyApp extends StatelessWidget {
       child: PlatformWidget(
         androidBuilder: _androidBuilder,
         iosBuilder: _iosBuilder,
+        macOSBuilder: _macOSBuilder,
       ),
     );
   }
