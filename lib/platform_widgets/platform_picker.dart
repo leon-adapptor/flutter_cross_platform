@@ -1,7 +1,9 @@
 import 'package:cross_platform/app_state_model.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
 /// A multi select widget that renders a platform specific picker.
@@ -31,10 +33,46 @@ class PlatformPicker extends StatelessWidget {
   }
 
   Widget _iosBuilder(BuildContext context) {
+    return CupertinoPickerButton(
+      items: items,
+    );
+  }
+
+  Widget _macOSBuilder(BuildContext context) {
     return Consumer<AppStateModel>(
       builder: (context, model, child) {
-        return CupertinoPickerButton(
-          items: items,
+        var popupItems = items.map((String value) {
+          return MacosPopupMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList();
+        return MacosPopupButton(
+          value: model.targetUI,
+          items: popupItems,
+          onChanged: (String? value) {
+            model.targetUI = value!;
+          },
+        );
+      },
+    );
+  }
+
+  Widget _windowsBuilder(BuildContext context) {
+    return Consumer<AppStateModel>(
+      builder: (context, model, child) {
+        var popupItems = items.map((String value) {
+          return ComboBoxItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList();
+        return ComboBox(
+          value: model.targetUI,
+          items: popupItems,
+          onChanged: (String? value) {
+            model.targetUI = value!;
+          },
         );
       },
     );
@@ -45,6 +83,8 @@ class PlatformPicker extends StatelessWidget {
     return PlatformWidget(
       androidBuilder: _androidBuilder,
       iosBuilder: _iosBuilder,
+      macOSBuilder: _macOSBuilder,
+      windowsBuilder: _windowsBuilder,
     );
   }
 }
