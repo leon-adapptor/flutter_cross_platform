@@ -1,10 +1,12 @@
 import 'package:cross_platform/app_state_model.dart';
 import 'package:cross_platform/platform_ui.dart';
+import 'package:cross_platform/platform_widgets/platform_card.dart';
 import 'package:cross_platform/platform_widgets/platform_list_tile.dart';
 import 'package:cross_platform/platform_widgets/platform_picker.dart';
 import 'package:cross_platform/platform_widgets/platform_slider.dart';
 import 'package:cross_platform/platform_widgets/platform_switch.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -190,12 +192,51 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget _windowsBuilder(BuildContext context) {
+    return fluent.NavigationView(
+      appBar: fluent.NavigationAppBar(
+        title: Text(widget.title),
+        automaticallyImplyLeading: false,
+      ),
+      pane: fluent.NavigationPane(
+          displayMode: fluent.PaneDisplayMode.auto,
+          selected: _pageIndex,
+          onChanged: (value) => setState(() {
+                _pageIndex = value;
+              }),
+          items: [
+            fluent.PaneItem(
+              icon: const Icon(fluent.FluentIcons.home),
+              title: const Text("Home"),
+              body: ListView(
+                children: widget.children.take(1).toList(),
+              ),
+            ),
+            fluent.PaneItem(
+              icon: const Icon(fluent.FluentIcons.waffle_office365),
+              title: const Text("Office"),
+              body: ListView(
+                children: widget.children.skip(1).toList(),
+              ),
+            ),
+          ],
+          footerItems: [
+            fluent.PaneItem(
+              icon: const Icon(fluent.FluentIcons.settings),
+              title: const Text("Settings"),
+              body: SettingsList(title: widget.title),
+            ),
+          ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
       androidBuilder: _androidBuilder,
       iosBuilder: _iosBuilder,
       macOSBuilder: _macOSBuilder,
+      windowsBuilder: _windowsBuilder,
     );
   }
 }
@@ -215,7 +256,7 @@ class SettingsList extends StatelessWidget {
     // MyPlatformUI.material3,
     MyPlatformUI.cupertino,
     MyPlatformUI.macOS,
-    // MyPlatformUI.windows,
+    MyPlatformUI.windows,
     // MyPlatformUI.linux,
     // MyPlatformUI.web,
   ];
@@ -281,7 +322,7 @@ class DashSection extends StatelessWidget {
         right: 10,
         bottom: 10,
       ),
-      child: Card(
+      child: PlatformCard(
         child: Column(
           children: [
             Container(

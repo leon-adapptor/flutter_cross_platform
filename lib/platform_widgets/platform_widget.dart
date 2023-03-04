@@ -6,18 +6,24 @@ import 'package:provider/provider.dart';
 
 import '../app_state_model.dart';
 
-/// A simple widget that builds specific widgets for different platforms.
+/// A widget that takes platform specific [WidgetBuilder] functions and
+/// runs the builder fucntion based on the selected or detected platform.
+///
+/// androidBuilder is the only required prop, and is used by default if no
+/// platform-specific builder is provided.
 class PlatformWidget extends StatelessWidget {
   const PlatformWidget({
     super.key,
     required this.androidBuilder,
-    required this.iosBuilder,
+    this.iosBuilder,
     this.macOSBuilder,
+    this.windowsBuilder,
   });
 
   final WidgetBuilder androidBuilder;
-  final WidgetBuilder iosBuilder;
+  final WidgetBuilder? iosBuilder;
   final WidgetBuilder? macOSBuilder;
+  final WidgetBuilder? windowsBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +46,17 @@ class PlatformWidget extends StatelessWidget {
         if (isAndroid) {
           return androidBuilder(context);
         } else if (isIOS) {
-          return iosBuilder(context);
+          return iosBuilder != null
+              ? iosBuilder!(context)
+              : androidBuilder(context);
         } else if (isMacOS) {
           return macOSBuilder != null
               ? macOSBuilder!(context)
               : androidBuilder(context);
-          return androidBuilder(context);
         } else if (isWindows) {
-          // TODO implement windowsBuilder
-          return androidBuilder(context);
+          return windowsBuilder != null
+              ? windowsBuilder!(context)
+              : androidBuilder(context);
         } else if (isLinux) {
           // TODO implement linuxBuilder
           return androidBuilder(context);

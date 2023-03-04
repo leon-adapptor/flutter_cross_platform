@@ -1,4 +1,5 @@
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -36,12 +37,20 @@ class PlatformSwitch extends StatelessWidget {
     );
   }
 
+  ToggleSwitch _windowsBuilder(BuildContext context) {
+    return ToggleSwitch(
+      checked: value,
+      onChanged: onChanged,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
       androidBuilder: _androidBuilder,
       iosBuilder: _iosBuilder,
       macOSBuilder: _macOSBuilder,
+      windowsBuilder: _windowsBuilder,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -36,12 +37,25 @@ class PlatformSlider extends StatelessWidget {
     );
   }
 
+  Widget _windowsBuilder(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: fluent.Slider(
+        value: value,
+        onChanged: onChanged,
+        max: 1.0,
+        min: 0.0,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
       androidBuilder: _androidBuilder,
       iosBuilder: _iosBuilder,
       macOSBuilder: _macOSBuilder,
+      windowsBuilder: _windowsBuilder,
     );
   }
 }

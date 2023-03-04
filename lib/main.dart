@@ -1,5 +1,6 @@
 import 'package:cross_platform/dashboard.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide ThemeData;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -143,6 +144,36 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  Widget _windowsBuilder(BuildContext context) {
+    return Consumer<AppStateModel>(builder: (context, model, child) {
+      var brightnessPlatform =
+          SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      var scheme = model.isDarkMode
+          ? model.colorScheme.darkScheme
+          : model.colorScheme.lightScheme;
+      var brightness = model.isDarkMode ? Brightness.dark : brightnessPlatform;
+      return FluentApp(
+        title: title,
+        // TODO styling
+        theme: FluentThemeData(),
+        home: Dashboard(title: title, children: _dashSections),
+        builder: (context, child) {
+          // we want to add in the material theme
+          // so we can use material widgets
+          // and use the material color scheme
+          return Theme(
+            data: ThemeData(
+              // brightness: brightness,
+              useMaterial3: true,
+              colorScheme: scheme,
+            ),
+            child: Material(child: child),
+          );
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AppStateModel>(
@@ -151,6 +182,7 @@ class MyApp extends StatelessWidget {
         androidBuilder: _androidBuilder,
         iosBuilder: _iosBuilder,
         macOSBuilder: _macOSBuilder,
+        windowsBuilder: _windowsBuilder,
       ),
     );
   }
