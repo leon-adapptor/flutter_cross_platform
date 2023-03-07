@@ -442,17 +442,20 @@ class _DashSliderState extends State<DashSlider> {
     return DashControl(
       opacity: sliderValue,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          PlatformSlider(
-            value: sliderValue,
-            onChanged: (value) {
-              setState(() {
-                sliderValue = value;
-              });
-            },
+          Expanded(
+            flex: 4,
+            child: PlatformSlider(
+              value: sliderValue,
+              onChanged: (value) {
+                setState(() {
+                  sliderValue = value;
+                });
+              },
+            ),
           ),
-          Text(widget.label),
+          Expanded(flex: 1, child: Text(widget.label)),
         ],
       ),
     );
