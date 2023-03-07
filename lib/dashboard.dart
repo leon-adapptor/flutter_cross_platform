@@ -359,13 +359,15 @@ class DashSection extends StatelessWidget {
 }
 
 class DashControl extends StatelessWidget {
+  final String label;
   final double opacity;
-  final Widget child;
+  final Widget control;
 
   const DashControl({
     super.key,
+    required this.label,
     required this.opacity,
-    required this.child,
+    required this.control,
   });
 
   @override
@@ -379,7 +381,13 @@ class DashControl extends StatelessWidget {
             .withOpacity(opacity),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: child,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(flex: 4, child: control),
+          Expanded(flex: 1, child: Text(label)),
+        ],
+      ),
     );
   }
 }
@@ -401,23 +409,15 @@ class _DashSwitchState extends State<DashSwitch> {
   @override
   Widget build(BuildContext context) {
     return DashControl(
+      label: widget.label,
       opacity: isSelected ? 1.0 : 0.0,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            flex: 4,
-            child: PlatformSwitch(
-              value: isSelected,
-              onChanged: (value) {
-                setState(() {
-                  isSelected = value;
-                });
-              },
-            ),
-          ),
-          Expanded(flex: 1, child: Text(widget.label)),
-        ],
+      control: PlatformSwitch(
+        value: isSelected,
+        onChanged: (value) {
+          setState(() {
+            isSelected = value;
+          });
+        },
       ),
     );
   }
@@ -440,23 +440,15 @@ class _DashSliderState extends State<DashSlider> {
   @override
   Widget build(BuildContext context) {
     return DashControl(
+      label: widget.label,
       opacity: sliderValue,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            flex: 4,
-            child: PlatformSlider(
-              value: sliderValue,
-              onChanged: (value) {
-                setState(() {
-                  sliderValue = value;
-                });
-              },
-            ),
-          ),
-          Expanded(flex: 1, child: Text(widget.label)),
-        ],
+      control: PlatformSlider(
+        value: sliderValue,
+        onChanged: (value) {
+          setState(() {
+            sliderValue = value;
+          });
+        },
       ),
     );
   }
