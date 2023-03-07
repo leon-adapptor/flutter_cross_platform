@@ -259,6 +259,7 @@ class SettingsList extends StatelessWidget {
     MyPlatformUI.windows,
     // MyPlatformUI.linux,
     // MyPlatformUI.web,
+    MyPlatformUI.customUI,
   ];
 
   @override
@@ -267,7 +268,8 @@ class SettingsList extends StatelessWidget {
       builder: (context, model, child) => ListView(
         padding: EdgeInsets.zero,
         children: [
-          model.targetUI == MyPlatformUI.material
+          model.targetUI == MyPlatformUI.material ||
+                  model.targetUI == MyPlatformUI.customUI
               ? DrawerHeader(
                   child: Text(
                     title,
@@ -277,11 +279,15 @@ class SettingsList extends StatelessWidget {
               : Container(),
           PlatformListTile(
             title: const Text('Dark Mode'),
-            trailing: PlatformSwitch(
-              value: model.isDarkMode,
-              onChanged: (value) {
-                model.darkMode = value;
-              },
+            trailing: SizedBox(
+              width: 60,
+              height: 60,
+              child: PlatformSwitch(
+                value: model.isDarkMode,
+                onChanged: (value) {
+                  model.darkMode = value;
+                },
+              ),
             ),
             onTap: () {
               model.darkMode = !model.isDarkMode;
@@ -397,17 +403,20 @@ class _DashSwitchState extends State<DashSwitch> {
     return DashControl(
       opacity: isSelected ? 1.0 : 0.0,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          PlatformSwitch(
-            value: isSelected,
-            onChanged: (value) {
-              setState(() {
-                isSelected = value;
-              });
-            },
+          Expanded(
+            flex: 4,
+            child: PlatformSwitch(
+              value: isSelected,
+              onChanged: (value) {
+                setState(() {
+                  isSelected = value;
+                });
+              },
+            ),
           ),
-          Text(widget.label),
+          Expanded(flex: 1, child: Text(widget.label)),
         ],
       ),
     );

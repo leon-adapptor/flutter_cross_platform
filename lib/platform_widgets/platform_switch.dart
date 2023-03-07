@@ -1,3 +1,4 @@
+import 'package:cross_platform/custom_ui/custom_switch.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,7 @@ import 'package:macos_ui/macos_ui.dart';
 class PlatformSwitch extends StatelessWidget {
   final bool value;
 
-  final ValueChanged<bool>? onChanged;
+  final ValueChanged<bool> onChanged;
 
   const PlatformSwitch({
     super.key,
@@ -37,8 +38,17 @@ class PlatformSwitch extends StatelessWidget {
     );
   }
 
-  ToggleSwitch _windowsBuilder(BuildContext context) {
-    return ToggleSwitch(
+  Widget _windowsBuilder(BuildContext context) {
+    return Center(
+      child: ToggleSwitch(
+        checked: value,
+        onChanged: onChanged,
+      ),
+    );
+  }
+
+  Widget _customUIBuilder(BuildContext context) {
+    return MyCustomSwitch(
       checked: value,
       onChanged: onChanged,
     );
@@ -51,6 +61,7 @@ class PlatformSwitch extends StatelessWidget {
       iosBuilder: _iosBuilder,
       macOSBuilder: _macOSBuilder,
       windowsBuilder: _windowsBuilder,
+      customUIBuilder: _customUIBuilder,
     );
   }
 }

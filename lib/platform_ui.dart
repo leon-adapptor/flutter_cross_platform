@@ -10,4 +10,5 @@ class MyPlatformUI {
   static const String macOS = 'MacOS';
   static const String linux = 'Linux';
   static const String web = 'Web';
+  static const String customUI = 'CustomUI';
 }

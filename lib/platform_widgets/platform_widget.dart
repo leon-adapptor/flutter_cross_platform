@@ -18,12 +18,14 @@ class PlatformWidget extends StatelessWidget {
     this.iosBuilder,
     this.macOSBuilder,
     this.windowsBuilder,
+    this.customUIBuilder,
   });
 
   final WidgetBuilder androidBuilder;
   final WidgetBuilder? iosBuilder;
   final WidgetBuilder? macOSBuilder;
   final WidgetBuilder? windowsBuilder;
+  final WidgetBuilder? customUIBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class PlatformWidget extends StatelessWidget {
             model.targetUI == MyPlatformUI.linux || (auto && Platform.isLinux);
         bool isWeb =
             model.targetUI == MyPlatformUI.web; // || (auto && Platform.web);
+        bool isCustomUI = model.targetUI == MyPlatformUI.customUI;
 
         if (isAndroid) {
           return androidBuilder(context);
@@ -56,6 +59,10 @@ class PlatformWidget extends StatelessWidget {
         } else if (isWindows) {
           return windowsBuilder != null
               ? windowsBuilder!(context)
+              : androidBuilder(context);
+        } else if (isCustomUI) {
+          return customUIBuilder != null
+              ? customUIBuilder!(context)
               : androidBuilder(context);
         } else if (isLinux) {
           // TODO implement linuxBuilder
