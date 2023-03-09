@@ -45,9 +45,9 @@ class MyCustomSlider extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black54.withOpacity(0.4),
-              spreadRadius: -25,
-              blurRadius: 8,
-              offset: const Offset(-4, 25),
+              spreadRadius: -30,
+              blurRadius: 30,
+              offset: const Offset(-20, 35),
             ),
           ],
         ),
