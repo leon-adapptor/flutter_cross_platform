@@ -1,4 +1,5 @@
 import 'package:cross_platform/app_state_model.dart';
+import 'package:cross_platform/platform_ui.dart';
 import 'package:cross_platform/platform_widgets/platform_widget.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,17 @@ import 'package:provider/provider.dart';
 class PlatformPicker extends StatelessWidget {
   final List<String> items;
 
-  const PlatformPicker({super.key, required this.items});
+  const PlatformPicker({
+    super.key,
+    required this.items,
+  });
+
+  _onChange(String value, AppStateModel model) {
+    model.targetUI = value;
+    if (value == MyPlatformUI.customUI) {
+      model.darkMode = true;
+    }
+  }
 
   Widget _androidBuilder(BuildContext context) {
     return Consumer<AppStateModel>(builder: (context, model, child) {
@@ -20,7 +31,7 @@ class PlatformPicker extends StatelessWidget {
         value: model.targetUI,
         elevation: 16,
         onChanged: (String? value) {
-          model.targetUI = value!;
+          _onChange(value ?? MyPlatformUI.auto, model);
         },
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -51,7 +62,7 @@ class PlatformPicker extends StatelessWidget {
           value: model.targetUI,
           items: popupItems,
           onChanged: (String? value) {
-            model.targetUI = value!;
+            _onChange(value ?? MyPlatformUI.auto, model);
           },
         );
       },
@@ -71,7 +82,7 @@ class PlatformPicker extends StatelessWidget {
           value: model.targetUI,
           items: popupItems,
           onChanged: (String? value) {
-            model.targetUI = value!;
+            _onChange(value ?? MyPlatformUI.auto, model);
           },
         );
       },
@@ -160,6 +171,10 @@ class CupertinoPickerButton extends StatelessWidget {
                 }),
               ) ??
               model.targetUI;
+
+          if (model.targetUI == MyPlatformUI.customUI) {
+            model.darkMode = true;
+          }
         },
         // This displays the selected item name.
         child: Text(model.targetUI),
