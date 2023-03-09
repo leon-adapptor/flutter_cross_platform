@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cross_platform/platform_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,10 @@ class PlatformWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppStateModel>(
       builder: (context, model, child) {
+        if (kIsWeb) {
+          return androidBuilder(context);
+        }
+
         bool auto = model.targetUI == MyPlatformUI.auto;
         bool isAndroid = model.targetUI == MyPlatformUI.material ||
             (auto && Platform.isAndroid);
