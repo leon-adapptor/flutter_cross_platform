@@ -26,6 +26,26 @@ class PlatformCard extends StatelessWidget {
     return fluent.Card(child: child);
   }
 
+  Widget _customUIBuilder(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [
+              Theme.of(context).cardColor,
+              Theme.of(context).cardColor,
+              Theme.of(context).colorScheme.secondaryContainer,
+            ],
+          ),
+        ),
+        child: child,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
@@ -33,6 +53,7 @@ class PlatformCard extends StatelessWidget {
       iosBuilder: _iosBuilder,
       macOSBuilder: _macOSBuilder,
       windowsBuilder: _windowsBuilder,
+      customUIBuilder: _customUIBuilder,
     );
   }
 }

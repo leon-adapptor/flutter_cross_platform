@@ -358,20 +358,19 @@ class DashSection extends StatelessWidget {
   }
 }
 
-class DashControl extends StatelessWidget {
+class PlatformDashControl extends StatelessWidget {
   final String label;
   final double opacity;
   final Widget control;
 
-  const DashControl({
+  const PlatformDashControl({
     super.key,
     required this.label,
     required this.opacity,
     required this.control,
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _androidBuilder(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -388,6 +387,24 @@ class DashControl extends StatelessWidget {
           Expanded(flex: 1, child: Text(label)),
         ],
       ),
+    );
+  }
+
+  Widget _customUIBuilder(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(flex: 4, child: control),
+        Expanded(flex: 1, child: Text(label)),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PlatformWidget(
+      androidBuilder: _androidBuilder,
+      customUIBuilder: _customUIBuilder,
     );
   }
 }
@@ -408,7 +425,7 @@ class _DashSwitchState extends State<DashSwitch> {
   bool isSelected = false;
   @override
   Widget build(BuildContext context) {
-    return DashControl(
+    return PlatformDashControl(
       label: widget.label,
       opacity: isSelected ? 1.0 : 0.0,
       control: PlatformSwitch(
@@ -439,7 +456,7 @@ class _DashSliderState extends State<DashSlider> {
   double sliderValue = 0.0;
   @override
   Widget build(BuildContext context) {
-    return DashControl(
+    return PlatformDashControl(
       label: widget.label,
       opacity: sliderValue,
       control: PlatformSlider(
