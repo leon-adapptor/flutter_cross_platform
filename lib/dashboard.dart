@@ -1,4 +1,5 @@
 import 'package:cross_platform/app_state_model.dart';
+import 'package:cross_platform/archery_page.dart';
 import 'package:cross_platform/platform_ui.dart';
 import 'package:cross_platform/platform_widgets/platform_card.dart';
 import 'package:cross_platform/platform_widgets/platform_list_tile.dart';
@@ -84,6 +85,13 @@ class _DashboardState extends State<Dashboard> {
         ),
         body: ListView(
           children: widget.children,
+        ),
+        // launch archery pull to refresh demo
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.double_arrow_sharp),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ArcheryPage()),
+          ),
         ),
       );
     }

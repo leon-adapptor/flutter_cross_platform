@@ -38,6 +38,7 @@ dependencies:
   macos_ui: ^2.0.2
   fluent_ui: ^4.4.0
   rive: ^0.12.3
+  easy_refresh: ^3.3.2+2
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/smart_home.riv
+    - assets/pull-to-refresh-use-case.riv
+
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
